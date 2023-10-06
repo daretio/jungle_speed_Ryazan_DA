@@ -1,56 +1,52 @@
 import pygame as pg
+import random
 
 pg.init()
-screen_widht, screen_heigh = 800, 600
-
-
-FPS = 24
+screen_width, screen_height = 800, 600
+FPS = 24    # frame per second
 clock = pg.time.Clock()
 
-#изображения
+# изображения
 bg_img = pg.image.load('src/background.png')
-icon_img = pg.image.load('src/ufo.png')
+icon_img = pg.image.load('src/logo.jpg')
+card_images = []
+card_images.append(pg.image.load("src/carteverso.png"))
+for i in range(1, 69+1):
+    # Формируйте путь к файлу изображения с использованием текущего индекса
+    filename = f"src/carte{i}.png"
 
-display = pg.display.set_mode((screen_widht, screen_heigh))
-#display.fill('blue', (0, 0, screen_widht, screen_heigh))
+    # Загрузите изображение и добавьте его в список
+    card = pg.image.load(filename)
+    card_images.append(card)
+card_images.append(pg.image.load("src/nocard.png"))
+card_images.append(pg.image.load("src/totem.png"))
+display = pg.display.set_mode((screen_width, screen_height))
 pg.display.set_icon(icon_img)
-pg.display.set_caption('Space invaders')
+pg.display.set_caption('Jungle Speed')
 
 sys_font = pg.font.SysFont('arial', 34)
 font = pg.font.Font('src/04B_19.TTF', 48)
 
-display.blit(bg_img, (0, 0))
-
-text_img = sys_font.render('Score: 123', True, 'white')
-display.blit(text_img, (0, 0))
-
-dz_text = sys_font.render('Andreev Dmitry', True, 'white')
-display.blit(dz_text, (595, 550))
-
-game_over_text = font.render('Game Over', True, 'red')
-w, h = game_over_text.get_size()
-display.blit(game_over_text, (screen_widht/2 - w/2, screen_heigh/2 - h/2))
-
-#igrok
-player_img = pg.image.load('src/player.png')
-player_widht, player_height = player_img.get_size()
+# display.fill('blue', (0, 0, screen_width, screen_height))
+display.blit(bg_img, (0, 0))        # image.tr
 
 running = True
 while running:
-    pg.display.update()
     for event in pg.event.get():
-        #нажали крестик на окне
-        if event.type == pg.QUIT or event.type == pg.KEYDOWN and event.key == pg.K_q:
+        if event.type == pg.QUIT:
             running = False
-        #tut nazhimaem na klavishi
-        if event.type == pg.KEYDOWN:
-            #nazhata q
-            if event.key == pg.K_q:
-                running = False
-            if event.key == pg.K_SPACE:
-                display.blit(bg_img, (0, 0))
 
-    clock.tick(FPS)
+    display.fill((255, 255, 255))
+
+    pos = 100
+    # Отобразите каждое изображение на экране
+    for i, image in enumerate(card_images):
+        display.blit(image, ((100 * i)%800, pos))
+        if 100*i > 800:
+            pos += 100
+            i /= 8
+
+    pg.display.flip()
 
 pg.quit()
 
