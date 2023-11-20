@@ -1,0 +1,15 @@
+{
+    "deck": "yc rc yh yb",
+    "heap": "yq bc bh rq",
+    "players": [
+        {
+            "name": "Dima",
+            "hand": "rl rh"
+        },
+        {
+            "name": "Andrew",
+            "hand": "bl gl"
+        }
+    ],
+    "player_index": 0
+}

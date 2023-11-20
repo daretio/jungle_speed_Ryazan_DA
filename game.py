@@ -1,53 +1,95 @@
-import pygame as pg
+import json
+
+from card import Card
+from deck import Deck, Heap
+from hand import Hand
+from player import Player
 
 
 class Game:
-    current_scene_index = 0
+    HAND_SIZE = 7
+    DEFAULT_PLAYER_NAMES = ['Bob', 'Mike']
 
-    def __init__(self):
-        self.scenes = []
-        self.game_over = False
-        self.screen_width, self.screen_height = 800, 600  # Инициализация размеров окна
-        self.FPS = 24  # Частота обновления экрана
-        self.clock = pg.time.Clock()
+    def __init__(self, player_names: list[str] | None = None):
+        if player_names is None:
+            player_names = Game.DEFAULT_PLAYER_NAMES
+        self.deck = Deck()
+        self.players = [Player(name, self.deck.draw(Game.HAND_SIZE)) for name in player_names]
+        self.player_index = 0
+        self.heap = Heap([self.deck.draw()])
 
-        # Инициализация изображений
-        self.bg_img = pg.image.load('assets/src/background.png')  # Фон
-        self.icon_img = pg.image.load('assets/src/logo.jpg')  # Лого
-        self.card_images = [pg.image.load("assets/src/carteverso.png")]  # Карты
-        for i in range(1, 69 + 1):
-            filename = f"assets/src/carte{i}.png"
-            card = pg.image.load(filename)
-            self.card_images.append(card)
-        self.card_images.append(pg.image.load("assets/src/nocard.png"))
-        self.card_images.append(pg.image.load("assets/src/totem.png"))
+    @staticmethod
+    def create(game_dict: dict):
+        g = Game([])    # без игроков
+        g.deck = Deck.create(game_dict['deck'])
+        g.heap = Heap.create(game_dict['heap'])
+        g.players = [Player(p) for p in game_dict['players']]
+        g.player_index = int(game_dict['player_index'])
+        return g
 
-        # Инициализация окна дисплея
-        self.display = pg.display.set_mode((self.screen_width, self.screen_height))
-        pg.display.set_icon(self.icon_img)
-        pg.display.set_caption('Jungle Speed')
+    @property
+    def current_player(self):
+        return self.players[self.player_index]
 
-        # Инициализация шрифта
-        sys_font = pg.font.SysFont('arial', 34)
-        font = pg.font.Font('assets/src/04B_19.TTF', 48)
-        self.display.blit(self.bg_img, (0, 0))  # image.tr
+    def run(self):
+        running = True
+        while running:
+            top = self.heap.top()
+            print(f'Top: {top}')
+            print(self.current_player)
+            cards = self.current_player.get_available_cards(top)
+            print(f'Available cards: {cards}')
+            if cards:
+                # можно сыграть карту
+                card = self.current_player.play_card(cards)
+                self.heap.put(card)
+                print(f'Play card {card}')
+            else:
+                # нельзя сыграть карту, берем карту из колоды
+                print("Cannot play card")
+                card = self.deck.draw()
+                print(f'Draw card {card}')
+                if top.accept(card):
+                    # взятую карту можно сыграть
+                    print('Play it!')
+                    self.heap.put(card)
+                else:
+                    # взятую карту нельзя сыграть, берем ее в руку
+                    self.current_player.add_card(card)
+                    print('Got card :(')
+            print(self.current_player)
 
-    # Метод перезаливки дисплея
-    def display_redraw(self):
-        self.display.blit(self.bg_img, (0, 0))
-        pg.display.update()
+            # проверяем условие победы, если победили, выходим с индексом игрока
+            if self.current_player.check_win_condition():
+                return
 
-    def process_all_events(self) -> None:
-        for event in pg.event.get():
-            if event.type == pg.QUIT:  # Нажали крестик на окне
-                self.game_over = True
-            if event.type == pg.KEYDOWN:  # Тут нажимаем на клавиши
-                if event.key == pg.K_q:  # Нажали на q - quit
-                    self.game_over = True
-        self.clock.tick(self.FPS)
+            self.next_player()
 
-    def main_loop(self) -> None:
-        while not self.game_over:
-            self.process_all_events()
-            self.display_redraw()
-            pg.time.wait(10)
+    def next_player(self):
+        """ Переходим к следующему игроку. """
+        self.player_index = (self.player_index + 1) % len(self.players)
+
+    def congratulations(self):
+        print(f'THE END! Winner {self.current_player.name}')
+
+
+def new_game():
+    from random import seed
+    seed(7)
+    g = Game(['Bob', 'Mike'])
+    g.run()
+    g.congratulations()
+
+def load_game(filename: str):
+    with open('data.json') as fin:
+        d2 = json.load(fin)
+    print(d2)
+    g = Game.create(d2)
+    g.run()
+    g.congratulations()
+
+
+if __name__ == '__main__':
+    load_game('data.json')
+
+
