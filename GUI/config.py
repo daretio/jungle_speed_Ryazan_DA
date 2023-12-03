@@ -3,12 +3,12 @@ RSC = {
     'FPS': 30,
     'img': {
         'bg_color': (0, 81, 44),
-        'background': 'resources/img/background.png',
-        'back': 'resources/img/cards/carteverso.png',
-        'card': 'resources/img/cards/{}.png',
-        'totem': 'resources/img/totem.png',
-        'nocard': 'resources/img/nocard.jpg',
-        'logo': 'resources/img/logo.jpg'
+        'background': 'GUI/resources/img/background.png',
+        'back': 'GUI/resources/img/carteverso.png',
+        'card': 'GUI/resources/img/cards/{}.png',
+        'totem': 'GUI/resources/img/totem.png',
+        'nocard': 'GUI/resources/img/nocard.jpg',
+        'logo': 'GUI/resources/img/logo.jpg'
     },
     'sound': {
     },

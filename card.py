@@ -28,16 +28,16 @@ class Card:
             raise ValueError(f'Wrong form {form}')
 
     def __repr__(self):
-        return f'{self.color[0]}{self.form}'
+        return f'{self.color}{self.form}'
 
     def __eq__(self, other):
         return self.color == other.color and self.form == other.form
 
     @staticmethod
     def create(text: str):
-        """ По тексту вида 'rc' возвращается карта Card('red', 'circle')."""
+        """ По тексту вида 'rc' возвращается карта Card('red', 'c')."""
         letter = Card.COLOR_LETTERS.get(text[0], None)
-        form = Card.FORM_LETTERS.get(text[1:], None)
+        form = text[1:]
         return Card(letter, form)
 
     @staticmethod

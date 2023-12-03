@@ -16,7 +16,7 @@ class Game:
         self.deck = Deck()
         self.players = [Player(name, self.deck.draw(Game.HAND_SIZE)) for name in player_names]
         self.player_index = 0
-        self.heap = Heap([self.deck.draw()])
+        self.heap = Heap(self.deck.draw())
 
     @staticmethod
     def create(game_dict: dict):
@@ -79,6 +79,7 @@ def new_game():
     g = Game(['Bob', 'Mike'])
     g.run()
     g.congratulations()
+
 
 def load_game(filename: str):
     with open('data.json') as fin:

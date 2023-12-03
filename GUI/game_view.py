@@ -14,8 +14,8 @@ class ViewGame:
     def __init__(self, size):
         # Одна карта, клик мыши левой кнопкой - переворот карты, a - select/unselect
         pygame.time.set_timer(ANIMATION, self.TICK_MS)
-        self.cv1 = ViewCard(Card('red', 4), 10, 20)
-        self.cv2 = ViewCard(Card('yellow', 9), 400, 250)
+        self.cv1 = ViewCard(Card('red', 'c'), 10, 20)
+        self.cv2 = ViewCard(Card('yellow', 'h'), 400, 250)
         self.size = self.width, self.height = size
         self.fly: FlyCard | None = None
 

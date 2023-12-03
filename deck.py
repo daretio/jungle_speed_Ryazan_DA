@@ -33,6 +33,7 @@ class Deck:
 
 class Heap:
     def __init__(self, cards=None):
+        #self.player = player
         self.cards = [] if cards is None else cards
 
     def __repr__(self):
