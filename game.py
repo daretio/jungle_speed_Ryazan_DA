@@ -16,13 +16,13 @@ class Game:
         self.deck = Deck()
         self.players = [Player(name, self.deck.draw(Game.HAND_SIZE)) for name in player_names]
         self.player_index = 0
-        self.heap = Heap(self.deck.draw())
+        self.heaps = [Heap([self.deck.draw()], player) for player in player_names]
 
     @staticmethod
     def create(game_dict: dict):
         g = Game([])    # без игроков
         g.deck = Deck.create(game_dict['deck'])
-        g.heap = Heap.create(game_dict['heap'])
+        g.heaps = [Heap.create(game_dict['heap'])]
         g.players = [Player(p) for p in game_dict['players']]
         g.player_index = int(game_dict['player_index'])
         return g
@@ -33,30 +33,20 @@ class Game:
 
     def run(self):
         running = True
+        top = self.players[self.player_index].play_card(self.players[self.player_index].hand)
+        self.next_player()
         while running:
-            top = self.heap.top()
-            print(f'Top: {top}')
+            past_top = top
+            top = self.players[self.player_index].play_card(self.players[self.player_index].hand)
+            print(f'Top: {top, past_top}')
             print(self.current_player)
-            cards = self.current_player.get_available_cards(top)
-            print(f'Available cards: {cards}')
-            if cards:
-                # можно сыграть карту
-                card = self.current_player.play_card(cards)
-                self.heap.put(card)
-                print(f'Play card {card}')
+            duel = self.current_player.is_duel(top, past_top)
+            print(f'Is duel available: {duel}')
+            if duel:
+                # можно сыграть дуэль
+                pass
             else:
-                # нельзя сыграть карту, берем карту из колоды
-                print("Cannot play card")
-                card = self.deck.draw()
-                print(f'Draw card {card}')
-                if top.accept(card):
-                    # взятую карту можно сыграть
-                    print('Play it!')
-                    self.heap.put(card)
-                else:
-                    # взятую карту нельзя сыграть, берем ее в руку
-                    self.current_player.add_card(card)
-                    print('Got card :(')
+                pass
             print(self.current_player)
 
             # проверяем условие победы, если победили, выходим с индексом игрока
@@ -64,6 +54,7 @@ class Game:
                 return
 
             self.next_player()
+            print("--------------------------------")
 
     def next_player(self):
         """ Переходим к следующему игроку. """

@@ -18,10 +18,6 @@ class Hand:
         """дает hand[i] и hand[i:j]"""
         return self.cards[item]
 
-    def get_payable_cards(self, topcard: Card):
-        """ Возвращает список карт, которые можно было бы сыграть на topcard"""
-        return [card for card in self.cards if topcard.accept(card)]
-
     def remove_card(self, card: Card):
         """ Удаляет из руки карту card (чтобы положить ее в отбой)"""
         self.cards.remove(card)

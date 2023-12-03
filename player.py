@@ -29,7 +29,8 @@ class Player:
         """ {'name': 'Bob', 'hand': 'rc bq yl'} """
         return Player(player_dict['name'], Hand.create(player_dict['hand']))
 
-    def get_available_cards(self, top: Card):
-        """ Возвращает список карт, которые можно положить на top"""
-        return [card for card in self.hand if top.accept(card)]
+    @staticmethod
+    def is_duel(card, past_card):
+        """ Возвращает True, если возможна дуэль двух игроков"""
+        return card.form == past_card.form
 
