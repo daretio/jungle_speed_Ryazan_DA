@@ -32,6 +32,7 @@ class Deck:
 
 
 class Heap:
+    """Куча"""
     def __init__(self, cards=None, player=None):
         self.player = player
         self.cards = [] if cards is None else cards
@@ -45,6 +46,10 @@ class Heap:
 
     def put(self, card: Card):
         self.cards.append(card)
+
+    def remove_card(self, card: Card):
+        """ Удаляет из кучи карту card """
+        self.cards.remove(card)
 
     @staticmethod
     def create(text: str):

@@ -1,4 +1,5 @@
 import json
+import time
 
 from card import Card
 from deck import Deck, Heap
@@ -7,7 +8,7 @@ from player import Player
 
 
 class Game:
-    HAND_SIZE = 7
+    HAND_SIZE = 12
     DEFAULT_PLAYER_NAMES = ['Bob', 'Mike']
 
     def __init__(self, player_names: list[str] | None = None):
@@ -20,7 +21,7 @@ class Game:
 
     @staticmethod
     def create(game_dict: dict):
-        g = Game([])    # без игроков
+        g = Game([])  # без игроков
         g.deck = Deck.create(game_dict['deck'])
         g.heaps = [Heap.create(game_dict['heap'])]
         g.players = [Player(p) for p in game_dict['players']]
@@ -33,28 +34,50 @@ class Game:
 
     def run(self):
         running = True
-        top = self.players[self.player_index].play_card(self.players[self.player_index].hand)
+        # Добавляем карту из колоды игрока в кучу
+        self.heaps[self.player_index].put(
+            self.players[self.player_index].play_card(
+                self.players[self.player_index].hand))
+        # Берём верхнюю карту из кучи игрока
+        past_player_index = self.player_index
         self.next_player()
+        print(past_player_index, self.player_index)
         while running:
-            past_top = top
-            top = self.players[self.player_index].play_card(self.players[self.player_index].hand)
+            self.heaps[self.player_index].put(
+                self.players[self.player_index].play_card(
+                    self.players[self.player_index].hand))
+            past_top = self.heaps[past_player_index].top()  # Верхняя карта прошлого игрока
+            top = self.heaps[self.player_index].top()  # Верхняя карта текущего игрока
             print(f'Top: {top, past_top}')
             print(self.current_player)
-            duel = self.current_player.is_duel(top, past_top)
+            duel = self.current_player.is_duel(top, past_top)  # Если совпали формы карт, играем дуэль
             print(f'Is duel available: {duel}')
             if duel:
-                # можно сыграть дуэль
-                pass
-            else:
-                pass
-            print(self.current_player)
+                # Можно сыграть дуэль
+                winner, looser = self.winner_of_duel(past_player_index)
+                print(f'Heap of the winner: {self.heaps[winner].cards}')
+                self.players[looser].hand.move_cards(self.heaps[winner])
+                print(f'Winner: {self.players[winner]}')
+                print(f'Looser: {self.players[looser]}')
+            # print(f'Current player: {self.current_player}')
 
-            # проверяем условие победы, если победили, выходим с индексом игрока
+            # Проверяем условие победы, если победили, выходим с индексом игрока
             if self.current_player.check_win_condition():
                 return
 
+            past_player_index = self.player_index
             self.next_player()
             print("--------------------------------")
+
+    def winner_of_duel(self, other_player_index):
+        """Реализация невозможна без графического интерфейса (тотема). В качестве временного решения - случайный выбор
+        победителя и програвшего"""
+        from random import randint
+        random_number = randint(-100, 100)
+        if random_number % 2 == 0:
+            return self.player_index, other_player_index
+        else:
+            return other_player_index, self.player_index
 
     def next_player(self):
         """ Переходим к следующему игроку. """
@@ -83,5 +106,3 @@ def load_game(filename: str):
 
 if __name__ == '__main__':
     load_game('data.json')
-
-

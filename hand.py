@@ -1,4 +1,5 @@
 from card import Card
+from deck import Heap
 
 
 class Hand:
@@ -26,6 +27,12 @@ class Hand:
     def add_card(self, card: Card):
         """ Добавляет карту в руку. """
         self.cards.append(card)
+
+    def move_cards(self, heap: Heap) -> None:
+        """ Перемещает колоду карт от одного игрока к другому """
+        for card in heap.cards:
+            self.add_card(card)
+            heap.remove_card(card)
 
     @staticmethod
     def create(text: str):
