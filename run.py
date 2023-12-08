@@ -6,7 +6,7 @@ from game import Game
 def main():
     pg.init()
     game = Game()
-    game.run()
+    game.new_game()
     pg.quit()
 
 

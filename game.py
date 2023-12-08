@@ -34,6 +34,9 @@ class Game:
 
     def run(self):
         running = True
+        round_counter = 1
+        print("WELCOME TO THE GAME!")
+        print("--------------------------------")
         # Добавляем карту из колоды игрока в кучу
         self.heaps[self.player_index].put(
             self.players[self.player_index].play_card(
@@ -41,8 +44,8 @@ class Game:
         # Берём верхнюю карту из кучи игрока
         past_player_index = self.player_index
         self.next_player()
-        print(past_player_index, self.player_index)
         while running:
+            print(f'ROUND {round_counter}: ')
             self.heaps[self.player_index].put(
                 self.players[self.player_index].play_card(
                     self.players[self.player_index].hand))
@@ -61,6 +64,7 @@ class Game:
                 print(f'Looser: {self.players[looser]}')
 
             # print(f'Current player: {self.current_player}')
+            print("--------------------------------")
 
             # Проверяем условие победы, если победили, выходим с индексом игрока
             if self.current_player.check_win_condition():
@@ -68,7 +72,9 @@ class Game:
 
             past_player_index = self.player_index
             self.next_player()
-            print("--------------------------------")
+            round_counter += 1
+
+
 
     def winner_of_duel(self, other_player_index):
         """Реализация невозможна без графического интерфейса (тотема). В качестве временного решения - случайный выбор
@@ -85,15 +91,13 @@ class Game:
         self.player_index = (self.player_index + 1) % len(self.players)
 
     def congratulations(self):
-        print(f'THE END! Winner {self.current_player.name}')
+        print(f'THE END! The winner is: {self.current_player.name}')
 
-
-def new_game():
-    from random import seed
-    seed(7)
-    g = Game(['Bob', 'Mike'])
-    g.run()
-    g.congratulations()
+    def new_game(self):
+        from random import seed
+        seed(7)
+        self.run()
+        self.congratulations()
 
 
 def load_game(filename: str):

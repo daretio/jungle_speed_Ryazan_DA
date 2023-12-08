@@ -20,7 +20,7 @@ class Player:
     def play_card(self, cards: list[Card]) -> Card:
         """ играет карту, удаляя ее из руки. Возвращает сыгранную карту. """
         card = cards[0]
-        print(self.hand, type(self.hand))
+        #print(self.hand, type(self.hand))
         self.hand.remove_card(card)
         return card
 
