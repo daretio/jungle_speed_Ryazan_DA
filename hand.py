@@ -30,9 +30,9 @@ class Hand:
 
     def move_cards(self, heap: Heap) -> None:
         """ Перемещает колоду карт от одного игрока к другому """
-        for card in heap.cards:
-            self.add_card(card)
-            heap.remove_card(card)
+        for i in range(len(heap.cards)-1, 0, -1):
+            self.add_card(heap.cards[i])
+            heap.remove_card(heap.cards[i])
 
     @staticmethod
     def create(text: str):

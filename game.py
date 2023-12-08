@@ -59,6 +59,7 @@ class Game:
                 self.players[looser].hand.move_cards(self.heaps[winner])
                 print(f'Winner: {self.players[winner]}')
                 print(f'Looser: {self.players[looser]}')
+
             # print(f'Current player: {self.current_player}')
 
             # Проверяем условие победы, если победили, выходим с индексом игрока
