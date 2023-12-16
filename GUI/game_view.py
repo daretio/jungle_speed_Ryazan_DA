@@ -14,15 +14,11 @@ class ViewGame:
     def __init__(self, size):
         # Одна карта, клик мыши левой кнопкой - переворот карты, a - select/unselect
         pygame.time.set_timer(ANIMATION, self.TICK_MS)
-        self.cv1 = ViewCard(Card('red', 'c'), 10, 20)
-        self.cv2 = ViewCard(Card('yellow', 'h'), 400, 250)
         self.size = self.width, self.height = size
         self.fly: FlyCard | None = None
 
     def draw(self, display: pygame.Surface):
         display.fill(self.BACKGROUND_COLOR, (0, 0, self.width, self.height))
-        self.cv1.draw(display)
-        self.cv2.draw(display)
         pygame.display.update()
 
     def dispatcher(self, event: pygame.event.Event):
@@ -43,14 +39,7 @@ class ViewGame:
             print(key)
             pos = pygame.mouse.get_pos()
             print(pos)
-            # нажата левая кнопка мыши, смотрим попало событие в widget
-            if key[0] and self.cv1.inside(pos):
-                self.cv1.flip()
-            # для второй карты нажатие запускает полет
-            if key[0] and self.cv2.inside(pos):
-                self.fly = FlyCard(self.cv2, self.cv1.x, self.cv1.y, self.TICK_ANIMATION_DURATION)
 
-        # по клавише a - select/unselect
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_a:
-            self.cv1.select()
+
+
 

@@ -1,10 +1,9 @@
 import json
 import time
 
-from card import Card
 from deck import Deck, Heap
-from hand import Hand
 from player import Player
+from GUI.application import Application
 
 
 class Game:
@@ -79,12 +78,14 @@ class Game:
     def winner_of_duel(self, other_player_index):
         """Реализация невозможна без графического интерфейса (тотема). В качестве временного решения - случайный выбор
         победителя и програвшего"""
-        from random import randint
-        random_number = randint(-100, 100)
-        if random_number % 2 == 0:
-            return self.player_index, other_player_index
-        else:
-            return other_player_index, self.player_index
+        win = Application(self.player_index, other_player_index)
+        return win.run()
+        #from random import randint
+        #random_number = randint(-100, 100)
+        #if random_number % 2 == 0:
+        #    return self.player_index, other_player_index
+        #else:
+        #    return other_player_index, self.player_index
 
     def next_player(self):
         """ Переходим к следующему игроку. """
